@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imported models</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- https://threejs.org/docs/#manual/en/introduction/Installation OPTION 2:: CDN-->
+  <script type="importmap">
+        {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.174.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.174.0/examples/jsm/",
+            "three/examples/jsm/controls/": "https://cdn.jsdelivr.net/npm/three@0.174.0/examples/jsm/controls/",
+            "three/examples/jsm/loaders/": "https://cdn.jsdelivr.net/npm/three@0.174.0/examples/jsm/loaders/"
+          }
+        }
+      </script>
+</head>
+
+<body>
+  <canvas class="webgl"></canvas>
+  <script type="module" src="script.js"></script>
+</body>
+
+</html>
