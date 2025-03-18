@@ -20,24 +20,24 @@ const clock = new THREE.Clock();
 const scene = new THREE.Scene()
 
 // Camera
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 camera.position.y = 0;
 camera.position.x = 5;
 camera.position.z = 10;
-camera.lookAt( -5 , 0, 10);
+camera.lookAt(-5, 0, 10);
 
 
 const renderer = new THREE.WebGLRenderer();
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.setAnimationLoop( animate );
-				document.body.appendChild( renderer.domElement );
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setAnimationLoop(animate);
+document.body.appendChild(renderer.domElement);
 
 
 const controls = new FirstPersonControls(camera, renderer.domElement)
 controls.lookSpeed = 0.01;
 controls.movementSpeed = 1;
-controls.noFly =false;
+controls.noFly = false;
 controls.lookVertical = false;
 
 
@@ -93,7 +93,7 @@ gltfLoader.load(
 
 // Floor
 const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(10, 10),
+    new THREE.PlaneGeometry(100, 100),
     new THREE.MeshStandardMaterial({
         color: '#444444',
         metalness: 0,
@@ -105,8 +105,8 @@ scene.add(floor)
 objects.push(floor)
 
 // Animation loop
-function animate(){
-    controls.update( clock.getDelta() );
+function animate() {
+    controls.update(clock.getDelta());
     renderer.render(scene, camera)
 }
 
