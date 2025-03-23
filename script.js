@@ -31,9 +31,10 @@ const scene = new THREE.Scene()
 
 // Camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-camera.position.y = 0;
-camera.position.x = 5;
-camera.position.z = 10;
+camera.position.y = 10;
+camera.position.x = -56.026;
+camera.position.z = -310.555;
+camera.rotation.y = 4;
 
 
 const renderer = new THREE.WebGLRenderer();
@@ -149,42 +150,48 @@ directionalLight.position.set(5, 5, 5)
 scene.add(directionalLight)
 
 
-// Collision detection
 const objects = []
 
-let duckModel;
+
+// Raycasting
+const raycaster = new THREE.Raycaster();
+const collisionObjects = [];
 
 gltfLoader.load(
-    'static/models/Duck/glTF/Duck.gltf',
+    'static/models/Path/glTF/Path.gltf',
     (gltf) => {
-        duckModel = gltf.scene.children[0]
-        duckModel.position.set(1, 1, 0)
-        scene.add(duckModel)
-        objects.push(duckModel)
+        console.log('success_2 ')
+        let modelArray = gltf.scene.children;
+        modelArray.forEach(mesh => {
+            mesh.scale.set(3, 3, 3);
+            mesh.position.y += 2.2;
+            if (mesh.isMesh) {
+                mesh.material = new THREE.MeshStandardMaterial({
+                    map: mesh.material.map,
+                    normalMap: mesh.material.normalMap,
+                    roughnessMap: mesh.material.roughnessMap,
+                    metalnessMap: mesh.material.metalnessMap
+                });
+                collisionObjects.push(mesh);
+            }
+        });
+        for (const childmodel of modelArray) {
+            scene.add(childmodel)
+        }
+    },
+    (progress) => {
+        console.log('progress')
+        console.log(progress)
+    },
+    (error) => {
+        console.log('error')
+        console.log(error)
     }
-)
-
-
-gltfLoader.load(
-    'static/models/Cube/cube.glb',
-    (gltf) => {
-        let cube = gltf.scene.children[0]
-        cube.scale.set(50, 50, 50);
-        scene.add(cube)
-        objects.push(cube)
-    }
-)
+);
 
 function movementUpdate() {
     const time = performance.now();
     if (controls.isLocked === true) {
-
-        // raycaster.ray.origin.copy( controls.object.position );
-        // raycaster.ray.origin.y -= 10;
-
-        // const intersections = raycaster.intersectObjects( objects, false );
-
-        //const onObject = intersections.length > 0;
 
         const delta = (time - prevTime) / 1000;
 
@@ -202,16 +209,15 @@ function movementUpdate() {
         //update velocity x
         if (moveLeft || moveRight) velocity.x -= direction.x * moveSpeed * delta;
 
-        // if ( onObject === true ) {
+        // Raycasting for collision detection
+        raycaster.set(controls.getObject().position, direction);
+        const intersections = raycaster.intersectObjects(collisionObjects, true);
+        const onObject = intersections.length > 0;
 
-        //     velocity.y = Math.max( 0, velocity.y );
-        //     canJump = true;
-
-        // }
-
-
-        controls.moveRight(- velocity.x * delta);
-        controls.moveForward(- velocity.z * delta);
+        if (!onObject) {
+            controls.moveRight(- velocity.x * delta);
+            controls.moveForward(- velocity.z * delta);
+        }
 
         controls.object.position.y += (velocity.y * delta); // new behavior
 
@@ -228,6 +234,17 @@ function movementUpdate() {
     prevTime = time;
 
 }
+
+// sky
+const sky = new THREE.Mesh(
+    new THREE.SphereGeometry(500, 32, 32),
+    new THREE.MeshBasicMaterial({
+        color: 0x000033, // dark blue color
+        side: THREE.DoubleSide
+    })
+);
+scene.add(sky);
+
 // Floor
 const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(1000, 1000),
@@ -241,11 +258,14 @@ floor.rotation.x = - Math.PI / 2
 scene.add(floor)
 objects.push(floor)
 
+
+
 // Animation loop
 function animate() {
     if (controls.isLocked === true) {
         movementUpdate();
         // updatePhysics();
+        console.log(camera.position)
     }
     renderer.render(scene, camera)
 }
