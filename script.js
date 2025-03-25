@@ -9,6 +9,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 // https://threejs.org/examples/?q=pointerlock#misc_controls_pointerlock
 
+
 let moveForward = false;
 let moveBackward = false;
 let moveLeft = false;
@@ -43,9 +44,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setAnimationLoop(animate);
 document.body.appendChild(renderer.domElement);
 
-const controls = new PointerLockControls(camera, renderer.domElement)
-
-
+const controls = new PointerLockControls(camera, renderer.domElement);
 
 scene.add(controls.object); //add camera to the scene
 const onKeyDown = function (event) {
@@ -257,8 +256,6 @@ const floor = new THREE.Mesh(
 floor.rotation.x = - Math.PI / 2
 scene.add(floor)
 objects.push(floor)
-
-
 
 // Animation loop
 function animate() {
