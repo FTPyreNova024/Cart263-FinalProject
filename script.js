@@ -152,12 +152,13 @@ scene.add(directionalLight)
 const objects = []
 
 
+
 // Raycasting
 const raycaster = new THREE.Raycaster();
 const collisionObjects = [];
 
 gltfLoader.load(
-    'static/models/Path/glTF/Path.gltf',
+    'static/models/Path/Path1/Path.gltf',
     (gltf) => {
         console.log('success_2 ')
         let modelArray = gltf.scene.children;
@@ -182,7 +183,47 @@ gltfLoader.load(
 
             allDescendents(mesh);
 
+        });
+        for (const childmodel of modelArray) {
+            scene.add(childmodel)
+        }
+    },
+    (progress) => {
+        console.log('progress')
+        console.log(progress)
+    },
+    (error) => {
+        console.log('error')
+        console.log(error)
+    }
+);
 
+gltfLoader.load(
+    'static/models/Path/Path2/ Path.gltf',
+    (gltf) => {
+        console.log('success_2 ')
+        let modelArray = gltf.scene.children;
+
+        modelArray.forEach(mesh => {
+            console.log("tetstststs")
+            //console.log(mesh.name);
+            mesh.scale.set(3, 3, 3);
+            mesh.position.y += 2.2;
+            mesh.position.x += 20;
+
+
+            function allDescendents(node) {
+                for (let i = 0; i < node.children.length; i++) {
+                    let child = node.children[i];
+                    console.log(child.name);
+                    allDescendents(child);
+                    if (child.isMesh) {
+                        collisionObjects.push(child);
+                    }
+                }
+            }
+
+            allDescendents(mesh);
 
         });
         for (const childmodel of modelArray) {
@@ -207,7 +248,7 @@ function movementUpdate() {
     if (controls.isLocked === true) {
 
         raycaster.ray.origin.copy(controls.object.position);
-        raycaster.ray.origin.y = 10;
+        raycaster.ray.origin.y = 0;
         const intersections = raycaster.intersectObjects(collisionObjects, false);
         console.log(intersections)
 
@@ -230,9 +271,9 @@ function movementUpdate() {
         // Raycasting for collision detection
         // raycaster.set(controls.object.position, direction);
         //  const intersections = raycaster.intersectObjects(collisionObjects, true);
+
+
         const onObject = intersections.length > 0;
-
-
 
         if (!onObject) {
 
@@ -248,7 +289,10 @@ function movementUpdate() {
             console.log(hitPoint)
         }
 
-        //controls.object.position.y += (velocity.y * delta); // new behavior
+
+
+
+        // controls.object.position.y += (velocity.y * delta); // new behavior
 
         // if (controls.object.position.y < speed) {
 
