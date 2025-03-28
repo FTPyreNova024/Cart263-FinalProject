@@ -48,7 +48,7 @@ const controls = new PointerLockControls(camera, renderer.domElement);
 
 scene.add(controls.object); //add camera to the scene
 const onKeyDown = function (event) {
-    console.log(event.code);
+    // console.log(event.code);
 
     switch (event.code) {
 
@@ -161,18 +161,29 @@ gltfLoader.load(
     (gltf) => {
         console.log('success_2 ')
         let modelArray = gltf.scene.children;
+
         modelArray.forEach(mesh => {
+            console.log("tetstststs")
+            //console.log(mesh.name);
             mesh.scale.set(3, 3, 3);
             mesh.position.y += 2.2;
-            if (mesh.isMesh) {
-                mesh.material = new THREE.MeshStandardMaterial({
-                    map: mesh.material.map,
-                    normalMap: mesh.material.normalMap,
-                    roughnessMap: mesh.material.roughnessMap,
-                    metalnessMap: mesh.material.metalnessMap
-                });
-                collisionObjects.push(mesh);
+
+
+            function allDescendents(node) {
+                for (let i = 0; i < node.children.length; i++) {
+                    let child = node.children[i];
+                    console.log(child.name);
+                    allDescendents(child);
+                    if (child.isMesh) {
+                        collisionObjects.push(child);
+                    }
+                }
             }
+
+            allDescendents(mesh);
+
+
+
         });
         for (const childmodel of modelArray) {
             scene.add(childmodel)
@@ -189,8 +200,16 @@ gltfLoader.load(
 );
 
 function movementUpdate() {
+    controls.object.position.y = 10;
+    //console.log("herereere")
+    //console.log(collisionObjects.length)
     const time = performance.now();
     if (controls.isLocked === true) {
+
+        raycaster.ray.origin.copy(controls.object.position);
+        raycaster.ray.origin.y = 10;
+        const intersections = raycaster.intersectObjects(collisionObjects, false);
+        console.log(intersections)
 
         const delta = (time - prevTime) / 1000;
 
@@ -209,25 +228,36 @@ function movementUpdate() {
         if (moveLeft || moveRight) velocity.x -= direction.x * moveSpeed * delta;
 
         // Raycasting for collision detection
-        raycaster.set(controls.getObject().position, direction);
-        const intersections = raycaster.intersectObjects(collisionObjects, true);
+        // raycaster.set(controls.object.position, direction);
+        //  const intersections = raycaster.intersectObjects(collisionObjects, true);
         const onObject = intersections.length > 0;
 
+
+
         if (!onObject) {
+
             controls.moveRight(- velocity.x * delta);
             controls.moveForward(- velocity.z * delta);
         }
-
-        controls.object.position.y += (velocity.y * delta); // new behavior
-
-        if (controls.object.position.y < speed) {
-
-            velocity.y = 0;
-            controls.object.position.y = speed;
-
-            canJump = true;
-
+        else {
+            console.log(intersections[0])
+            console.log("stop")
+            let boxThatWasHit = intersections[0].object;
+            let hitPoint = intersections[0].point;
+            console.log(boxThatWasHit)
+            console.log(hitPoint)
         }
+
+        //controls.object.position.y += (velocity.y * delta); // new behavior
+
+        // if (controls.object.position.y < speed) {
+
+        //     velocity.y = 0;
+        //     controls.object.position.y = speed;
+
+        //     canJump = true;
+
+        // }
 
     }
     prevTime = time;
@@ -262,7 +292,7 @@ function animate() {
     if (controls.isLocked === true) {
         movementUpdate();
         // updatePhysics();
-        console.log(camera.position)
+        //console.log(camera.position)
     }
     renderer.render(scene, camera)
 }
