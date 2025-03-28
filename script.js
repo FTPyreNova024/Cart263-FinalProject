@@ -199,7 +199,7 @@ gltfLoader.load(
 );
 
 gltfLoader.load(
-    'static/models/Path/Path2/ Path.gltf',
+    'static/models/Path/Path2/Path.gltf',
     (gltf) => {
         console.log('success_2 ')
         let modelArray = gltf.scene.children;
@@ -248,7 +248,7 @@ function movementUpdate() {
     if (controls.isLocked === true) {
 
         raycaster.ray.origin.copy(controls.object.position);
-        raycaster.ray.origin.y = 0;
+        raycaster.ray.origin.y = 10;
         const intersections = raycaster.intersectObjects(collisionObjects, false);
         console.log(intersections)
 
