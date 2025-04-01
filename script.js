@@ -9,6 +9,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 // https://threejs.org/examples/?q=pointerlock#misc_controls_pointerlock
 
+let path = 'Simon'
 
 let moveForward = false;
 let moveBackward = false;
@@ -114,6 +115,24 @@ const onKeyUp = function (event) {
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
 
+document.addEventListener('keydown', function (event) {
+    if (event.code === 'KeyT') {
+        if (path === 'Simon') {
+            camera.position.y = 10;
+            camera.position.x = 1019.0667;
+            camera.position.z = -212.2264;
+
+            path = 'Daniel';
+        } else {
+            camera.position.y = 10;
+            camera.position.x = -56.026;
+            camera.position.z = -310.555;
+
+            path = 'Simon';
+        }
+    }
+});
+
 
 document.addEventListener('click', function () {
 
@@ -199,17 +218,18 @@ gltfLoader.load(
 );
 
 gltfLoader.load(
-    'static/models/Path/Path2/Path.gltf',
+    'static/models/Path/Path2/Daniel.gltf',
     (gltf) => {
         console.log('success_2 ')
         let modelArray = gltf.scene.children;
 
+
         modelArray.forEach(mesh => {
             console.log("tetstststs")
             //console.log(mesh.name);
-            mesh.scale.set(3, 3, 3);
-            mesh.position.y += 2.2;
-            mesh.position.x += 20;
+            mesh.scale.set(12, 12, 12);
+            mesh.position.y += 0;
+            mesh.position.x += 800;
 
 
             function allDescendents(node) {
@@ -336,7 +356,7 @@ function animate() {
     if (controls.isLocked === true) {
         movementUpdate();
         // updatePhysics();
-        //console.log(camera.position)
+        // console.log(camera.position)
     }
     renderer.render(scene, camera)
 }
