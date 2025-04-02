@@ -167,10 +167,7 @@ directionalLight.shadow.camera.bottom = - 7
 directionalLight.position.set(5, 5, 5)
 scene.add(directionalLight)
 
-
 const objects = []
-
-
 
 // Raycasting
 const raycaster = new THREE.Raycaster();
@@ -187,14 +184,15 @@ gltfLoader.load(
             //console.log(mesh.name);
             mesh.scale.set(3, 3, 3);
             mesh.position.y += 2.2;
-
+            mesh.position.x += 5;
+            mesh.position.z += -260;
 
             function allDescendents(node) {
                 for (let i = 0; i < node.children.length; i++) {
                     let child = node.children[i];
                     console.log(child.name);
                     allDescendents(child);
-                    if (child.isMesh) {
+                    if (child.isMesh && child.name === 'WallRooft') {
                         collisionObjects.push(child);
                     }
                 }
@@ -328,6 +326,28 @@ function movementUpdate() {
 
 }
 
+
+// Ensure each collision object has a bounding box
+collisionObjects.forEach(obj => {
+    obj.geometry.computeBoundingBox();
+    obj.boundingBox = obj.geometry.boundingBox.clone();
+});
+
+// Check for collisions in the animation loop
+function checkCollisions(camera) {
+    const playerBox = new THREE.Box3().setFromObject(camera);
+
+    for (const obj of collisionObjects) {
+        const objBox = new THREE.Box3().setFromObject(obj);
+        if (playerBox.intersectsBox(objBox)) {
+            console.log('Collision detected with:', obj.name);
+            return true; // Collision occurred
+        }
+    }
+    return false; // No collision
+}
+
+
 // sky
 const sky = new THREE.Mesh(
     new THREE.SphereGeometry(500, 32, 32),
@@ -358,5 +378,8 @@ function animate() {
         // updatePhysics();
         // console.log(camera.position)
     }
+
+    checkCollisions(camera);
+
     renderer.render(scene, camera)
 }
