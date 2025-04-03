@@ -17,6 +17,7 @@ let moveLeft = false;
 let moveRight = false;
 let canJump = false;
 
+
 let prevTime = performance.now();
 const velocity = new THREE.Vector3(); //movement of camera
 const direction = new THREE.Vector3(); //direction
@@ -60,7 +61,7 @@ const onKeyDown = function (event) {
             break;
 
         case 'ArrowLeft':
-        case 'KeyA':
+        case 'KeyD':
             moveLeft = true;
             break;
 
@@ -70,7 +71,7 @@ const onKeyDown = function (event) {
             break;
 
         case 'ArrowRight':
-        case 'KeyD':
+        case 'KeyA':
             moveRight = true;
             break;
 
@@ -94,7 +95,7 @@ const onKeyUp = function (event) {
             break;
 
         case 'ArrowLeft':
-        case 'KeyA':
+        case 'KeyD':
             moveLeft = false;
             break;
 
@@ -104,7 +105,7 @@ const onKeyUp = function (event) {
             break;
 
         case 'ArrowRight':
-        case 'KeyD':
+        case 'KeyA':
             moveRight = false;
             break;
 
@@ -176,11 +177,12 @@ const collisionObjects = [];
 gltfLoader.load(
     'static/models/Path/Path1/Path.gltf',
     (gltf) => {
-        console.log('success_2 ')
+        console.log('success ')
         let modelArray = gltf.scene.children;
 
+
         modelArray.forEach(mesh => {
-            console.log("tetstststs")
+            //console.log("tetstststs")
             //console.log(mesh.name);
             mesh.scale.set(3, 3, 3);
             mesh.position.y += 2.2;
@@ -192,7 +194,9 @@ gltfLoader.load(
                     let child = node.children[i];
                     console.log(child.name);
                     allDescendents(child);
-                    if (child.isMesh && child.name === 'WallRooft') {
+                    //the name does not wqual as it is _1, _2 ...
+                    if (child.isMesh && child.name.startsWith('WallRooft')) {
+                        //  console.log("herer")
                         collisionObjects.push(child);
                     }
                 }
@@ -223,7 +227,7 @@ gltfLoader.load(
 
 
         modelArray.forEach(mesh => {
-            console.log("tetstststs")
+            // console.log("tetstststs")
             //console.log(mesh.name);
             mesh.scale.set(12, 12, 12);
             mesh.position.y += 0;
@@ -268,7 +272,7 @@ function movementUpdate() {
         raycaster.ray.origin.copy(controls.object.position);
         raycaster.ray.origin.y = 10;
         const intersections = raycaster.intersectObjects(collisionObjects, false);
-        console.log(intersections)
+        // console.log(intersections)
 
         const delta = (time - prevTime) / 1000;
 
@@ -279,6 +283,7 @@ function movementUpdate() {
 
         direction.z = Number(moveForward) - Number(moveBackward);
         direction.x = Number(moveRight) - Number(moveLeft);
+
         direction.normalize(); // this ensures consistent movements in all directions
 
         //update velocity z
@@ -286,26 +291,96 @@ function movementUpdate() {
         //update velocity x
         if (moveLeft || moveRight) velocity.x -= direction.x * moveSpeed * delta;
 
+        //if(moveLeft) {otherDirection ="moveRight"}
+        //if(moveRight) {otherDirection ="moveLeft"}
         // Raycasting for collision detection
         // raycaster.set(controls.object.position, direction);
         //  const intersections = raycaster.intersectObjects(collisionObjects, true);
 
 
         const onObject = intersections.length > 0;
+        console.log(onObject)
+        //check if left or right (where intersections occur)
 
         if (!onObject) {
 
-            controls.moveRight(- velocity.x * delta);
+
             controls.moveForward(- velocity.z * delta);
+            controls.moveRight(velocity.x * delta);
+
         }
-        else {
+        else if (intersections[0].distance > 5) {
+            controls.moveForward(- velocity.z * delta);
+            controls.moveRight(velocity.x * delta);
+
+        }
+
+        //have a case for each direction that we allow the opposite
+        else if (intersections[0].distance < 5 && moveBackward === true) {
             console.log(intersections[0])
             console.log("stop")
-            let boxThatWasHit = intersections[0].object;
-            let hitPoint = intersections[0].point;
-            console.log(boxThatWasHit)
-            console.log(hitPoint)
+            //allow to moveForward!
+            //bounce away?
+
+            controls.moveForward(velocity.z * .5);
+
+            //let boxThatWasHit = intersections[0].object;
+            //let hitPoint = intersections[0].point;
+
         }
+
+        else if (intersections[0].distance < 5 && moveForward === true) {
+            console.log(intersections[0])
+            console.log("stop")
+            //allow to moveForward!
+            //bounce in opposite?
+            controls.moveForward(velocity.z * .5);
+        }
+
+        else if (intersections[0].distance < 5 && moveRight === true) {
+            console.log(intersections[0])
+            console.log("stop")
+            //allow to moveForward!
+            //bounce away?
+            controls.moveRight((-velocity.x * .5));
+        }
+
+        else if (intersections[0].distance < 5 && moveLeft === true) {
+            console.log(intersections[0])
+            console.log("stop")
+            //allow to moveForward!
+            //bounce away?
+            controls.moveRight((-velocity.x * .5));
+        }
+
+
+
+
+
+        //   else if ((moveRight ===true|| moveLeft ==true) && onObject && intersections[0].distance <5){
+        //     console.log("herer")
+        //    // controls.moveForward(- velocity.z * delta);
+        //     controls.moveRight(-(velocity.x * delta));
+        // }
+
+        // else if (intersections[0].distance <5) {
+
+
+        //     controls.moveForward(- velocity.z * delta);
+        //     controls.moveRight(velocity.x * delta);
+
+        // }
+        //if were going right then allow left and vice versa
+
+
+        // else {
+        //     console.log(intersections[0])
+        //     console.log("stop")
+        //     let boxThatWasHit = intersections[0].object;
+        //     let hitPoint = intersections[0].point;
+        //     // console.log(boxThatWasHit)
+        //     // console.log(hitPoint)
+        // }
 
 
 
