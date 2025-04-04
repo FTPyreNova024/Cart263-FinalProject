@@ -120,8 +120,8 @@ document.addEventListener('keydown', function (event) {
     if (event.code === 'KeyT') {
         if (path === 'Simon') {
             camera.position.y = 10;
-            camera.position.x = 1019.0667;
-            camera.position.z = -212.2264;
+            camera.position.x = 635.7920;
+            camera.position.z = 11.0339;
 
             path = 'Daniel';
         } else {
@@ -165,10 +165,10 @@ directionalLight.shadow.camera.left = - 7
 directionalLight.shadow.camera.top = 7
 directionalLight.shadow.camera.right = 7
 directionalLight.shadow.camera.bottom = - 7
-directionalLight.position.set(5, 5, 5)
+directionalLight.position.set(100, 100, 5)
 scene.add(directionalLight)
 
-const objects = []
+// const objects = []
 
 // Raycasting
 const raycaster = new THREE.Raycaster();
@@ -230,7 +230,7 @@ gltfLoader.load(
             // console.log("tetstststs")
             //console.log(mesh.name);
             mesh.scale.set(12, 12, 12);
-            mesh.position.y += 0;
+            mesh.position.y += 7;
             mesh.position.x += 800;
 
 
@@ -240,12 +240,73 @@ gltfLoader.load(
                     console.log(child.name);
                     allDescendents(child);
                     if (child.isMesh) {
-                        collisionObjects.push(child);
+                        // collisionObjects.push(child);
                     }
                 }
             }
 
             allDescendents(mesh);
+
+        });
+        for (const childmodel of modelArray) {
+            scene.add(childmodel)
+        }
+    },
+    (progress) => {
+        console.log('progress')
+        console.log(progress)
+    },
+    (error) => {
+        console.log('error')
+        console.log(error)
+    }
+);
+
+gltfLoader.load(
+    'static/models/Path/Floor2/Daniel.gltf',
+    (gltf) => {
+        console.log('success_2 ')
+        let modelArray = gltf.scene.children;
+
+
+        modelArray.forEach(mesh => {
+            // console.log("tetstststs")
+            //console.log(mesh.name);
+            mesh.scale.set(12, 12, 12);
+            mesh.position.y += 7;
+            mesh.position.x += 800;
+
+
+        });
+        for (const childmodel of modelArray) {
+            scene.add(childmodel)
+        }
+    },
+    (progress) => {
+        console.log('progress')
+        console.log(progress)
+    },
+    (error) => {
+        console.log('error')
+        console.log(error)
+    }
+);
+
+gltfLoader.load(
+    'static/models/Path/car/Daniel.gltf',
+    (gltf) => {
+        console.log('success_2 ')
+        let modelArray = gltf.scene.children;
+
+
+        modelArray.forEach(mesh => {
+            // console.log("tetstststs")
+            //console.log(mesh.name);
+            mesh.scale.set(2, 2, 2);
+            mesh.position.y += 10.2;
+            mesh.position.x = 704;
+            mesh.position.z = 121;
+
 
         });
         for (const childmodel of modelArray) {
@@ -353,49 +414,6 @@ function movementUpdate() {
             controls.moveRight((-velocity.x * .5));
         }
 
-
-
-
-
-        //   else if ((moveRight ===true|| moveLeft ==true) && onObject && intersections[0].distance <5){
-        //     console.log("herer")
-        //    // controls.moveForward(- velocity.z * delta);
-        //     controls.moveRight(-(velocity.x * delta));
-        // }
-
-        // else if (intersections[0].distance <5) {
-
-
-        //     controls.moveForward(- velocity.z * delta);
-        //     controls.moveRight(velocity.x * delta);
-
-        // }
-        //if were going right then allow left and vice versa
-
-
-        // else {
-        //     console.log(intersections[0])
-        //     console.log("stop")
-        //     let boxThatWasHit = intersections[0].object;
-        //     let hitPoint = intersections[0].point;
-        //     // console.log(boxThatWasHit)
-        //     // console.log(hitPoint)
-        // }
-
-
-
-
-        // controls.object.position.y += (velocity.y * delta); // new behavior
-
-        // if (controls.object.position.y < speed) {
-
-        //     velocity.y = 0;
-        //     controls.object.position.y = speed;
-
-        //     canJump = true;
-
-        // }
-
     }
     prevTime = time;
 
@@ -433,25 +451,12 @@ const sky = new THREE.Mesh(
 );
 scene.add(sky);
 
-// Floor
-const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(1000, 1000),
-    new THREE.MeshStandardMaterial({
-        color: '#444444',
-        metalness: 0,
-        roughness: 0.5
-    })
-)
-floor.rotation.x = - Math.PI / 2
-scene.add(floor)
-objects.push(floor)
-
 // Animation loop
 function animate() {
     if (controls.isLocked === true) {
         movementUpdate();
         // updatePhysics();
-        // console.log(camera.position)
+        console.log(camera.position)
     }
 
     checkCollisions(camera);
