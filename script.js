@@ -323,6 +323,38 @@ gltfLoader.load(
     }
 );
 
+
+gltfLoader.load(
+    'static/models/Path/figures/MK5/Untitled.gltf',
+    (gltf) => {
+        console.log('success_2 ')
+        let modelArray = gltf.scene.children;
+
+
+        modelArray.forEach(mesh => {
+            // console.log("tetstststs")
+            //console.log(mesh.name);
+            mesh.scale.set(2, 2, 2);
+            mesh.position.y += 10.2;
+            mesh.position.x = 704;
+            mesh.position.z = 121;
+
+
+        });
+        for (const childmodel of modelArray) {
+            scene.add(childmodel)
+        }
+    },
+    (progress) => {
+        console.log('progress')
+        console.log(progress)
+    },
+    (error) => {
+        console.log('error')
+        console.log(error)
+    }
+);
+
 function movementUpdate() {
     controls.object.position.y = 10;
     //console.log("herereere")
