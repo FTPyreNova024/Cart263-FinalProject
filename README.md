@@ -1,0 +1,3 @@
+This project serves as a virtual gallery, offering users an interactive and immersive experience to explore and learn about the diverse projects I have developed over the years. With nearly a decade of expertise in 3D modeling and digital art, my portfolio showcases a wide array of styles and object types. This gallery is designed to highlight my work in a professional and engaging manner. I would like to acknowledge Simon for his invaluable collaboration, which ensured the project met my vision seamlessly. His professionalism and efficiency made the process both smooth and enjoyable.
+
+I also extend my gratitude to Sabine Rosenberg and Copilot AI for their support in the development of this project.
